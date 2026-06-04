@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow mb-4">
+            <div class="card-body text-center">
+                <img src="https://via.placeholder.com/100" class="rounded-circle mb-3" width="100" height="100">
+                <h4>{{ current_user.prenom }} {{ current_user.nom }}</h4>
+                <p class="text-muted">{{ current_user.filiere }} - {{ current_user.niveau }}</p>
+                <a href="{{ url_for('profile') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-pencil"></i> Modifier profil
+                </a>
+            </div>
+        </div>
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-plus-circle"></i> Nouvelle offre/demande
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('nouvelle_offre') }}">
+                    <div class="mb-3">
+                        <label class="form-label">Type</label>
+                        <select name="type_offre" class="form-select" required>
+                            <option value="offre">Je propose du mentorat</option>
+                            <option value="demande">Je cherche un mentor</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Titre</label>
+                        <input type="text" name="titre" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Competence concernee</label>
+                        <select name="competence_id" class="form-select">
+                            <option value="">General</option>
+                            {% for c in competences %}
+                            <option value="{{ c.id }}">{{ c.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Format</label>
+                        <select name="format_session" class="form-select">
+                            <option value="presentiel">Presentiel</option>
+                            <option value="en_ligne">En ligne</option>
+                            <option value="les_deux">Les deux</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Publier</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <h3><i class="bi bi-list-task"></i> Mes offres et demandes</h3>
+        {% for offre in offres %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <span class="badge bg-{{ 'success' if offre.type_offre == 'offre' else 'info' }}">
+                            {{ 'Offre' if offre.type_offre == 'offre' else 'Demande' }}
+                        </span>
+                        <h5 class="card-title mt-2">{{ offre.titre }}</h5>
+                        <p class="card-text">{{ offre.description }}</p>
+                    </div>
+                    <a href="{{ url_for('matching', offre_id=offre.id) }}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-magic"></i> Voir les matchings
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">Vous n'avez pas encore publie d'offre ou de demande.</div>
+        {% endfor %}
+        
+        <h3 class="mt-4"><i class="bi bi-people"></i> Mes matchings</h3>
+        {% for m in matchings %}
+        <div class="card mb-2">
+            <div class="card-body">
+                <p>
+                    {% if current_user.id == m.mentor_id %}
+                        Mentore : <strong>{{ m.mentore.prenom }} {{ m.mentore.nom }}</strong>
+                    {% else %}
+                        Mentor : <strong>{{ m.mentor.prenom }} {{ m.mentor.nom }}</strong>
+                    {% endif %}
+                    <span class="badge bg-{{ 'success' if m.statut == 'accepte' else 'warning' }}">
+                        {{ m.statut }}
+                    </span>
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4">IFRI MentorLink</h1>
+        <p class="lead">Rapport Technique - Projet Integrateur 2025-2026</p>
+        <hr class="my-4">
+    </div>
+    
+    <section class="mb-5">
+        <h2><i class="bi bi-people"></i> Equipe</h2>
+        <ul class="list-group">
+            <li class="list-group-item">Membre 1 - Role</li>
+            <li class="list-group-item">Membre 2 - Role</li>
+            <li class="list-group-item">Membre 3 - Role</li>
+            <li class="list-group-item">Membre 4 - Role</li>
+            <li class="list-group-item">Membre 5 - Role</li>
+        </ul>
+    </section>
+    
+    <section class="mb-5">
+        <h2><i class="bi bi-diagram-3"></i> Architecture</h2>
+        <p>L'application suit une architecture client-serveur avec :</p>
+        <ul>
+            <li><strong>Frontend :</strong> HTML5, CSS3, JavaScript, Bootstrap 5</li>
+            <li><strong>Backend :</strong> Python 3.x avec Flask</li>
+            <li><strong>Base de donnees :</strong> PostgreSQL</li>
+        </ul>
+    </section>
+    
+    <section class="mb-5">
+        <h2><i class="bi bi-database"></i> Modele de donnees</h2>
+        <p>La base de donnees relationnelle comprend les entites principales :</p>
+        <ul>
+            <li><strong>User :</strong> Gestion des comptes utilisateurs</li>
+            <li><strong>Competence :</strong> Referentiel des competences</li>
+            <li><strong>Offre :</strong> Offres et demandes de mentorat</li>
+            <li><strong>Matching :</strong> Correspondances mentor-mentore</li>
+            <li><strong>Conversation & Message :</strong> Systeme de messagerie</li>
+        </ul>
+    </section>
+    
+    <section class="mb-5">
+        <h2><i class="bi bi-magic"></i> Algorithme de Matching</h2>
+        <p>L'algorithme calcule un score composite base sur trois criteres ponderes :</p>
+        <table class="table table-bordered">
+            <thead class="table-primary">
+                <tr>
+                    <th>Critere</th>
+                    <th>Poids</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Compatibilite des competences</td>
+                    <td>40%</td>
+                    <td>Intersection entre competences du mentor et lacunes du mentore</td>
+                </tr>
+                <tr>
+                    <td>Compatibilite des horaires</td>
+                    <td>35%</td>
+                    <td>Recouvrement des creneaux disponibles</td>
+                </tr>
+                <tr>
+                    <td>Proximite des filieres</td>
+                    <td>25%</td>
+                    <td>Correspondance filiere/niveau avec bonus si mentor plus avance</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    
+    <section class="mb-5">
+        <h2><i class="bi bi-rocket"></i> Instructions de deploiement</h2>
+        <ol>
+            <li>Installer Python 3.9+ et PostgreSQL</li>
+            <li>Configurer PostgreSQL avec un utilisateur et une base de donnees</li>
+            <li>Installer les dependances : <code>pip install -r requirements.txt</code></li>
+            <li>Configurer <code>config.py</code> avec les identifiants PostgreSQL</li>
+            <li>Initialiser la BDD : <code>flask init-db</code></li>
+            <li>Lancer l'application : <code>python app.py</code></li>
+        </ol>
+    </section>
+</div>
+{% endblock %}

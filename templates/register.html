@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-4 text-primary">
+                    <i class="bi bi-person-plus"></i> Inscription
+                </h2>
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nom</label>
+                            <input type="text" name="nom" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Prenom</label>
+                            <input type="text" name="prenom" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Telephone</label>
+                            <input type="tel" name="telephone" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Filiere</label>
+                            <select name="filiere" class="form-select" required>
+                                <option value="">Choisir...</option>
+                                <option value="IA">IA</option>
+                                <option value="IM">IM</option>
+                                <option value="GL">GL</option>
+                                <option value="SE&IoT">SE&IoT</option>
+                                <option value="SI">SI</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Niveau</label>
+                            <select name="niveau" class="form-select" required>
+                                <option value="">Choisir...</option>
+                                <option value="L1">L1</option>
+                                <option value="L2">L2</option>
+                                <option value="L3">L3</option>
+                                <option value="M1">M1</option>
+                                <option value="M2">M2</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label d-block">Je souhaite etre :</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="est_mentor" id="mentor">
+                            <label class="form-check-label" for="mentor">Mentor</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="est_mentore" id="mentore">
+                            <label class="form-check-label" for="mentore">Mentore</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mes competences (points forts)</label>
+                        <select name="competences" class="form-select" multiple size="4">
+                            {% for c in competences %}
+                            <option value="{{ c.id }}">{{ c.nom }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">Maintenez Ctrl pour selectionner plusieurs</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mes lacunes (besoin d'aide)</label>
+                        <select name="lacunes" class="form-select" multiple size="4">
+                            {% for c in competences %}
+                            <option value="{{ c.id }}">{{ c.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Disponibilites</label>
+                        {% set jours = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'] %}
+                        {% for jour in jours %}
+                        <div class="row mb-2">
+                            <div class="col-3 text-capitalize">{{ jour }}</div>
+                            <div class="col-9">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="dispo_{{ jour }}" value="08:00-10:00">
+                                    <label class="form-check-label">08-10h</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="dispo_{{ jour }}" value="10:00-12:00">
+                                    <label class="form-check-label">10-12h</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="dispo_{{ jour }}" value="14:00-16:00">
+                                    <label class="form-check-label">14-16h</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="dispo_{{ jour }}" value="16:00-18:00">
+                                    <label class="form-check-label">16-18h</label>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-check-circle"></i> Creer mon compte
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
