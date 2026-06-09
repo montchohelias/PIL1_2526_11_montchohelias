@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+﻿template_profile = '''{% extends "base.html" %}
 
 {% block title %}Mon Profil - MentorLink{% endblock %}
 
@@ -9,6 +9,7 @@
 </div>
 
 <div class="grid grid-2">
+    <!-- Carte de profil -->
     <div class="content-wrapper" style="text-align: center;">
         <div style="position: relative; display: inline-block; margin-bottom: 1.5rem;">
             <div class="avatar" style="width: 120px; height: 120px; font-size: 3rem; margin: 0 auto;">
@@ -68,6 +69,7 @@
         </div>
     </div>
 
+    <!-- Formulaire de modification -->
     <div class="content-wrapper">
         <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-800); margin-bottom: 1.5rem;">
             <i class="fas fa-edit" style="color: var(--primary); margin-right: 0.5rem;"></i>
@@ -130,3 +132,4 @@
     </div>
 </div>
 {% endblock %}
+'''
