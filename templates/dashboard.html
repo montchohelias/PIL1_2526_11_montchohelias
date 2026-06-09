@@ -1,100 +1,202 @@
 {% extends "base.html" %}
+
+{% block title %}Tableau de bord - MentorLink{% endblock %}
+
 {% block content %}
-<div class="row">
-    <div class="col-md-4">
-        <div class="card shadow mb-4">
-            <div class="card-body text-center">
-                <img src="https://via.placeholder.com/100" class="rounded-circle mb-3" width="100" height="100">
-                <h4>{{ current_user.prenom }} {{ current_user.nom }}</h4>
-                <p class="text-muted">{{ current_user.filiere }} - {{ current_user.niveau }}</p>
-                <a href="{{ url_for('profile') }}" class="btn btn-outline-primary btn-sm">
-                    <i class="bi bi-pencil"></i> Modifier profil
-                </a>
-            </div>
+<div class="page-header">
+    <h1><i class="fas fa-home"></i> Tableau de bord</h1>
+    <p>Bienvenue, {{ current_user.prenom }} ! Voici votre espace personnel.</p>
+</div>
+
+<div class="grid grid-3">
+    <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+        <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 0.5rem;">
+            <i class="fas fa-handshake"></i>
         </div>
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <i class="bi bi-plus-circle"></i> Nouvelle offre/demande
-            </div>
-            <div class="card-body">
-                <form method="POST" action="{{ url_for('nouvelle_offre') }}">
-                    <div class="mb-3">
-                        <label class="form-label">Type</label>
-                        <select name="type_offre" class="form-select" required>
-                            <option value="offre">Je propose du mentorat</option>
-                            <option value="demande">Je cherche un mentor</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Titre</label>
-                        <input type="text" name="titre" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Description</label>
-                        <textarea name="description" class="form-control" rows="3"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Competence concernee</label>
-                        <select name="competence_id" class="form-select">
-                            <option value="">General</option>
-                            {% for c in competences %}
-                            <option value="{{ c.id }}">{{ c.nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Format</label>
-                        <select name="format_session" class="form-select">
-                            <option value="presentiel">Presentiel</option>
-                            <option value="en_ligne">En ligne</option>
-                            <option value="les_deux">Les deux</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Publier</button>
-                </form>
-            </div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--gray-800);">
+            {{ matchings|length }}
         </div>
+        <div style="color: var(--gray-500);">Matchings</div>
     </div>
-    <div class="col-md-8">
-        <h3><i class="bi bi-list-task"></i> Mes offres et demandes</h3>
-        {% for offre in offres %}
-        <div class="card mb-3">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
+    
+    <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+        <div style="font-size: 2.5rem; color: var(--secondary); margin-bottom: 0.5rem;">
+            <i class="fas fa-bullhorn"></i>
+        </div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--gray-800);">
+            {{ offres|length }}
+        </div>
+        <div style="color: var(--gray-500);">Offres publiees</div>
+    </div>
+    
+    <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+        <div style="font-size: 2.5rem; color: var(--success); margin-bottom: 0.5rem;">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--gray-800);">
+            {{ conversations|length }}
+        </div>
+        <div style="color: var(--gray-500);">Conversations</div>
+    </div>
+</div>
+
+<div class="grid grid-2" style="margin-top: 2rem;">
+    <div class="content-wrapper">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-800);">
+                <i class="fas fa-bullhorn" style="color: var(--primary); margin-right: 0.5rem;"></i>
+                Mes Offres
+            </h2>
+            <button onclick="document.getElementById('modal-offre').style.display='flex'" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Nouvelle offre
+            </button>
+        </div>
+        
+        {% if offres %}
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% for offre in offres %}
+            <div class="card" style="padding: 1.25rem;">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
                     <div>
-                        <span class="badge bg-{{ 'success' if offre.type_offre == 'offre' else 'info' }}">
-                            {{ 'Offre' if offre.type_offre == 'offre' else 'Demande' }}
+                        <span class="status-badge" style="background: {% if offre.type_offre == 'demande' %}#fef3c7; color: #92400e;{% else %}#d1fae5; color: #065f46;{% endif %} margin-bottom: 0.5rem;">
+                            {{ offre.type_offre|capitalize }}
                         </span>
-                        <h5 class="card-title mt-2">{{ offre.titre }}</h5>
-                        <p class="card-text">{{ offre.description }}</p>
+                        <h3 style="font-weight: 600; color: var(--gray-800); margin-top: 0.5rem;">{{ offre.titre }}</h3>
                     </div>
-                    <a href="{{ url_for('matching', offre_id=offre.id) }}" class="btn btn-outline-primary btn-sm">
-                        <i class="bi bi-magic"></i> Voir les matchings
+                    <a href="{{ url_for('matching', offre_id=offre.id) }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-search"></i> Matching
                     </a>
                 </div>
+                <p style="color: var(--gray-500); font-size: 0.9rem; margin-bottom: 0.75rem;">{{ offre.description[:100] }}...</p>
+                <div style="display: flex; gap: 0.5rem; font-size: 0.85rem; color: var(--gray-400);">
+                    <span><i class="fas fa-calendar"></i> {{ offre.created_at.strftime('%d/%m/%Y') }}</span>
+                    <span><i class="fas fa-tag"></i> {{ offre.format_session }}</span>
+                </div>
             </div>
+            {% endfor %}
         </div>
         {% else %}
-        <div class="alert alert-info">Vous n'avez pas encore publie d'offre ou de demande.</div>
-        {% endfor %}
-        
-        <h3 class="mt-4"><i class="bi bi-people"></i> Mes matchings</h3>
-        {% for m in matchings %}
-        <div class="card mb-2">
-            <div class="card-body">
-                <p>
-                    {% if current_user.id == m.mentor_id %}
-                        Mentore : <strong>{{ m.mentore.prenom }} {{ m.mentore.nom }}</strong>
-                    {% else %}
-                        Mentor : <strong>{{ m.mentor.prenom }} {{ m.mentor.nom }}</strong>
-                    {% endif %}
-                    <span class="badge bg-{{ 'success' if m.statut == 'accepte' else 'warning' }}">
-                        {{ m.statut }}
-                    </span>
-                </p>
-            </div>
+        <div style="text-align: center; padding: 2rem; color: var(--gray-400);">
+            <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+            <p>Aucune offre pour le moment</p>
         </div>
-        {% endfor %}
+        {% endif %}
+    </div>
+    
+    <div class="content-wrapper">
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-800); margin-bottom: 1.5rem;">
+            <i class="fas fa-handshake" style="color: var(--secondary); margin-right: 0.5rem;"></i>
+            Mes Matchings
+        </h2>
+        
+        {% if matchings %}
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% for matching in matchings %}
+            <div class="card" style="padding: 1.25rem;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="avatar">
+                        {% if current_user.id == matching.mentor_id %}
+                            {{ matching.mentore.prenom[0] }}{{ matching.mentore.nom[0] }}
+                        {% else %}
+                            {{ matching.mentor.prenom[0] }}{{ matching.mentor.nom[0] }}
+                        {% endif %}
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: var(--gray-800);">
+                            {% if current_user.id == matching.mentor_id %}
+                                {{ matching.mentore.prenom }} {{ matching.mentore.nom }}
+                            {% else %}
+                                {{ matching.mentor.prenom }} {{ matching.mentor.nom }}
+                            {% endif %}
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--gray-500);">
+                            Score: <span style="color: var(--primary); font-weight: 600;">{{ matching.score_matching }}%</span>
+                        </div>
+                    </div>
+                    <span class="status-badge" style="background: {% if matching.statut == 'accepte' %}#d1fae5; color: #065f46;{% elif matching.statut == 'propose' %}#fef3c7; color: #92400e;{% else %}#fee2e2; color: #991b1b;{% endif %}">
+                        {{ matching.statut|capitalize }}
+                    </span>
+                </div>
+                
+                {% if matching.statut == 'propose' %}
+                <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                    <form action="{{ url_for('accepter_matching', matching_id=matching.id) }}" method="POST" style="flex: 1;">
+                        <button type="submit" class="btn btn-success btn-sm" style="width: 100%;">
+                            <i class="fas fa-check"></i> Accepter
+                        </button>
+                    </form>
+                    <button class="btn btn-danger btn-sm" style="flex: 1;">
+                        <i class="fas fa-times"></i> Refuser
+                    </button>
+                </div>
+                {% elif matching.statut == 'accepte' %}
+                <a href="{{ url_for('messages', conversation_id=matching.conversation.id) }}" class="btn btn-primary btn-sm" style="margin-top: 1rem; width: 100%; text-align: center; text-decoration: none;">
+                    <i class="fas fa-comments"></i> Discuter
+                </a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 2rem; color: var(--gray-400);">
+            <i class="fas fa-handshake" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+            <p>Aucun matching pour le moment</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div id="modal-offre" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div class="glass-card" style="width: 90%; max-width: 500px; padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="font-weight: 700; color: var(--gray-800);">Nouvelle Offre</h2>
+            <button onclick="document.getElementById('modal-offre').style.display='none'" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--gray-400);">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form action="{{ url_for('nouvelle_offre') }}" method="POST">
+            <div class="form-group">
+                <label class="form-label">Type d'offre</label>
+                <select name="type_offre" class="form-select" required>
+                    <option value="demande">Demande de mentorat</option>
+                    <option value="proposition">Proposition de mentorat</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Titre</label>
+                <input type="text" name="titre" class="form-input" placeholder="Ex: Aide en Python" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea name="description" class="form-textarea" placeholder="Decrivez votre besoin ou votre offre..." required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Competence concernee</label>
+                <select name="competence_id" class="form-select">
+                    <option value="">-- Selectionner --</option>
+                    {% for comp in competences %}
+                    <option value="{{ comp.id }}">{{ comp.nom }} ({{ comp.categorie }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Format de session</label>
+                <select name="format_session" class="form-select" required>
+                    <option value="presentiel">Presentiel</option>
+                    <option value="distance">Distance</option>
+                    <option value="les_deux">Les deux</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <i class="fas fa-paper-plane"></i> Publier l'offre
+            </button>
+        </form>
     </div>
 </div>
 {% endblock %}

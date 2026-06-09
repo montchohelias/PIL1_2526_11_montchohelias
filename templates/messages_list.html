@@ -1,24 +1,75 @@
 {% extends "base.html" %}
+
+{% block title %}Messages - MentorLink{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <h2><i class="bi bi-chat-dots"></i> Mes conversations</h2>
-        {% for conv in conversations %}
-        <div class="card mb-2">
-            <div class="card-body">
-                {% for p in conv.participants %}
-                    {% if p.id != current_user.id %}
-                    <a href="{{ url_for('messages', conversation_id=conv.id) }}" class="text-decoration-none">
-                        <h5>{{ p.prenom }} {{ p.nom }}</h5>
-                        <span class="text-muted">{{ p.filiere }} - {{ p.niveau }}</span>
-                    </a>
-                    {% endif %}
-                {% endfor %}
+<div class="page-header">
+    <h1><i class="fas fa-comments"></i> Messagerie</h1>
+    <p>Discutez avec vos mentors et mentores</p>
+</div>
+
+<div class="content-wrapper">
+    {% if conversations %}
+    <div style="display: flex; flex-direction: column; gap: 1rem;">
+        {% for conv_data in conversations %}
+        <a href="{{ url_for('messages', conversation_id=conv_data.conversation.id) }}" 
+           class="conversation-card card" 
+           style="display: flex; align-items: center; gap: 1rem; padding: 1.25rem; text-decoration: none; color: inherit;">
+            
+            <div class="avatar avatar-lg">
+                {{ conv_data.other_user.prenom[0] }}{{ conv_data.other_user.nom[0] }}
             </div>
-        </div>
-        {% else %}
-        <div class="alert alert-info">Aucune conversation pour le moment.</div>
+            
+            <div style="flex: 1; min-width: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                    <h3 style="font-weight: 600; color: var(--gray-800);">
+                        {{ conv_data.other_user.prenom }} {{ conv_data.other_user.nom }}
+                        <span class="status-badge status-online" style="margin-left: 0.5rem;">
+                            <i class="fas fa-circle" style="font-size: 0.5rem;"></i> En ligne
+                        </span>
+                    </h3>
+                    <span style="color: var(--gray-400); font-size: 0.85rem;">
+                        {% if conv_data.last_message %}
+                            {{ conv_data.last_message.created_at.strftime('%H:%M') }}
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <p style="color: var(--gray-500); font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    {% if conv_data.last_message %}
+                        {% if conv_data.last_message.expediteur_id == current_user.id %}
+                            <span style="color: var(--primary); font-weight: 500;">Vous:</span>
+                        {% endif %}
+                        {{ conv_data.last_message.contenu }}
+                    {% else %}
+                        <em>Aucun message encore. Commencez la conversation !</em>
+                    {% endif %}
+                </p>
+            </div>
+            
+            {% if conv_data.unread_count > 0 %}
+            <div style="background: linear-gradient(135deg, var(--danger), #dc2626); color: white; 
+                        width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; 
+                        justify-content: center; font-weight: 700; font-size: 0.8rem; flex-shrink: 0;">
+                {{ conv_data.unread_count }}
+            </div>
+            {% endif %}
+            
+            <i class="fas fa-chevron-right" style="color: var(--gray-300);"></i>
+        </a>
         {% endfor %}
     </div>
+    {% else %}
+    <div style="text-align: center; padding: 3rem;">
+        <div style="font-size: 4rem; color: var(--gray-300); margin-bottom: 1rem;">
+            <i class="fas fa-inbox"></i>
+        </div>
+        <h3 style="color: var(--gray-600); margin-bottom: 0.5rem;">Aucune conversation</h3>
+        <p style="color: var(--gray-400);">Acceptez un matching pour commencer a discuter.</p>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary" style="margin-top: 1rem;">
+            <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+        </a>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

@@ -1,4 +1,4 @@
-from models import User, Competence, Matching, Offre, db
+﻿from models import User, Competence, Matching, Offre, db
 import json
 
 class MatchingAlgorithm:
